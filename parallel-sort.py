@@ -24,12 +24,49 @@ def quick_sort_single_thread(arr, low, high):
 
         quick_sort_single_thread(arr, pi + 1, high)
 
+def merge_sort_single_thread(arr):
+    if len(arr) > 1:
+        mid = len(arr)//2
+        left = arr[:mid]
+        right = arr[mid:]
+
+        merge_sort_single_thread(left)
+        merge_sort_single_thread(right)
+
+        i = 0
+        j = 0
+        k = 0
+
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                arr[k] = left[i]
+                i += 1
+            else:
+                arr[k] = right[j]
+                j += 1
+            k += 1
+
+        while i < len(left):
+            arr[k] = left[i]
+            i += 1
+            k += 1
+
+        while j < len(right):
+            arr[k] = right[j]
+            j += 1
+            k += 1
+
 if __name__ == '__main__':
     processes = multiprocessing.cpu_count()
     print('Processes: ', processes)
     p = Pool(processes=processes)
     print(p.map(f, [1, 2, 3, 4, 5]))
 
-    myArray = [1,0,2,9,3,8,4,7,5,6]
+    toCopy = [1,0,2,9,3,8,4,7,5,6]
+    myArray = toCopy.copy()
     quick_sort_single_thread(myArray, 0, len(myArray)-1)
+    print(myArray)
+
+    myArray = toCopy.copy()
+    merge_sort_single_thread(myArray)
     print(myArray)
