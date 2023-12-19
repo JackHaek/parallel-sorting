@@ -111,7 +111,3 @@ if __name__ == '__main__':
     myArray = toCopy.copy()
     merge_sort_single_thread(myArray)
     print(myArray)
-
-    myArray = toCopy.copy()
-    p.map(merge_sort_single_thread, myArray)
-    print(myArray)
