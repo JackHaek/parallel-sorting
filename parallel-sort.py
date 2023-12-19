@@ -92,8 +92,9 @@ def merge_sort(arr, low, high):
 
         merge(arr, low, mid, high)
 
-def merge_sort_threaded(arr):
-    merge_sort(arr, 0, len(arr) - 1)
+def merge_sort_threaded(data):
+    print(data[1])
+    merge_sort(data[0], 0, data[1])
 
 
 if __name__ == '__main__':
@@ -112,5 +113,5 @@ if __name__ == '__main__':
     print(myArray)
 
     myArray = toCopy.copy()
-    p.map(merge_sort_threaded, myArray)
+    p.map(merge_sort_single_thread, myArray)
     print(myArray)
