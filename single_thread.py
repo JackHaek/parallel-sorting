@@ -1,6 +1,9 @@
 import numpy as np
 import multiprocessing
 from multiprocessing import Pool
+import random
+import time
+import matplotlib.pyplot as plt
 
 def f(x):
     return x*x
@@ -103,11 +106,21 @@ if __name__ == '__main__':
     p = Pool(processes=processes)
     print(p.map(f, [1, 2, 3, 4, 5]))
 
-    toCopy = [1,0,2,9,3,8,4,7,5,6]
-    myArray = toCopy.copy()
-    quick_sort_single_thread(myArray, 0, len(myArray)-1)
-    print(myArray)
+    test_cases = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]
+    times = []
 
-    myArray = toCopy.copy()
-    merge_sort_single_thread(myArray)
-    print(myArray)
+    for count in test_cases:
+
+        length = count
+
+        toCopy = randomized_array = [random.randint(0, n * 100) for n in range(length)]
+        myArray = toCopy.copy()
+        quick_sort_single_thread(myArray, 0, len(myArray)-1)
+
+        myArray = toCopy.copy()
+        start = time.time()
+        merge_sort_single_thread(myArray)
+        times.append(time.time() - start)
+    
+    plt.plot(test_cases, times)
+    plt.show()

@@ -4,6 +4,7 @@ import sys
 import time
 from contextlib import contextmanager
 from multiprocessing import Manager, Pool
+import matplotlib.pyplot as plt
 
 
 class Timer(object):
@@ -128,45 +129,50 @@ def get_command_line_parameters():
 
 
 if __name__ == '__main__':
-    parameters = get_command_line_parameters()
+    test_cases = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]
+    times = []
+    for count in test_cases:
+        parameters = get_command_line_parameters()
 
-    process_count = parameters['process_count']
+        process_count = parameters['process_count']
 
-    main_timer = Timer('single_core', 'list_generation')
-    main_timer.start_for('list_generation')
+        main_timer = Timer('single_core', 'list_generation')
+        main_timer.start_for('list_generation')
 
-    length = random.randint(3 * 10**4, 3 * 10**5)
+        length = count
 
-    randomized_array = [random.randint(0, n * 100) for n in range(length)]
-    main_timer.stop_for('list_generation')
+        randomized_array = [random.randint(0, n * 100) for n in range(length)]
+        main_timer.stop_for('list_generation')
 
-    print('List length: {}'.format(length))
-    print('Random list generated in %4.6f' %
-          main_timer['list_generation'])
+        print('\nList length: {}'.format(length))
 
-    main_timer.start_for('single_core')
-    single = merge_sort(randomized_array)
-    main_timer.stop_for('single_core')
+        main_timer.start_for('single_core')
+        single = merge_sort(randomized_array)
+        main_timer.stop_for('single_core')
 
-    randomized_array_sorted = randomized_array[:]
-    randomized_array_sorted.sort()
+        randomized_array_sorted = randomized_array[:]
+        randomized_array_sorted.sort()
 
-    print('Verification of sorting algorithm:',
-          randomized_array_sorted == single)
-    print('Single Core elapsed time: %4.6f sec' %
-          main_timer['single_core'])
+        print('Verification of sorting algorithm:',
+            randomized_array_sorted == single)
+        print('Single Core elapsed time: %4.6f sec' %
+            main_timer['single_core'])
 
-    print('Starting parallel sort.')
-    
-    parallel_timer, parallel_sorted_list = \
-        parallel_merge_sort(randomized_array, process_count)
+        print('Starting parallel sort.')
+        
+        parallel_timer, parallel_sorted_list = \
+            parallel_merge_sort(randomized_array, process_count)
 
-    print('Final merge duration: %4.6f sec' % parallel_timer['merge'])
-    print('Sorted arrays equal:',
-          parallel_sorted_list == randomized_array_sorted)
-    print(
-        '%d-Core elapsed time: %4.6f sec' % (
-            process_count,
-            parallel_timer['total']
+        print('Final merge duration: %4.6f sec' % parallel_timer['merge'])
+        print('Sorted arrays equal:',
+            parallel_sorted_list == randomized_array_sorted)
+        print(
+            '%d-Core elapsed time: %4.6f sec' % (
+                process_count,
+                parallel_timer['total']
+            )
         )
-    )
+        times.append(parallel_timer['total'])
+
+    plt.plot(test_cases, times)
+    plt.show()
